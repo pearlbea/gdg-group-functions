@@ -1,5 +1,25 @@
 {
   "functions": {
     "predeploy": "npm --prefix functions run build"
+  },
+  "hosting": {
+    "public": "public",
+    "rewrites": [
+      {
+        "source": "/meetup/*",
+        "function": "get_gdg_group"
+      }
+    ],
+    "headers": [
+      {
+        "source": "/meetup/*",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
+          }
+        ]
+      }
+    ]
   }
 }

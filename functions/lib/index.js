@@ -11,12 +11,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const functions = require("firebase-functions");
 const node_fetch_1 = require("node-fetch");
 exports.get_gdg_group = functions.https.onRequest((req, res) => {
-    if (!req.query.urlname) {
+    const urlname = req.path.split("/meetup/")[1];
+    if (!urlname) {
         res
             .status(400)
             .send({ errors: [{ message: "Please specify the GDG group name" }] });
     }
-    const urlname = req.query.urlname;
     const sig_id = functions.config().meetup.key;
     const url = `https://api.meetup.com/${urlname}?sig_id=${sig_id}`;
     function getGDGInfo() {
