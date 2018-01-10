@@ -18,7 +18,7 @@ exports.get_gdg_group = functions.https.onRequest((req, res) => {
             .send({ errors: [{ message: "Please specify the GDG group name" }] });
     }
     const sig_id = functions.config().meetup.key;
-    const url = `https://api.meetup.com/${urlname}?sig_id=${sig_id}`;
+    const url = `https://api.meetup.com/${urlname}/events?status=upcoming&sig_id=${sig_id}`;
     function getGDGInfo() {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield node_fetch_1.default(url);
