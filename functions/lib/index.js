@@ -18,12 +18,15 @@ exports.get_gdg_group = functions.https.onRequest((req, res) => {
             .send({ errors: [{ message: "Please specify the GDG group name" }] });
     }
     const sig_id = functions.config().meetup.key;
-    const url = `https://api.meetup.com/${urlname}/events?status=upcoming&sig_id=${sig_id}`;
+    const getGroup = node_fetch_1.default(`https://api.meetup.com/${urlname}?sig_id=${sig_id}`);
+    const getEvent = node_fetch_1.default(`https://api.meetup.com/${urlname}/events?status=upcoming&sig_id=${sig_id}`);
     function getGDGInfo() {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield node_fetch_1.default(url);
-            const json = yield response.json();
-            return json;
+            const [group, event] = yield Promise.all([
+                getGroup.then(response => response.json()),
+                getEvent.then(response => response.json())
+            ]);
+            return [group, event];
         });
     }
     getGDGInfo()

@@ -10,12 +10,15 @@ export const get_gdg_group = functions.https.onRequest((req, res) => {
   }
 
   const sig_id = functions.config().meetup.key;
-  const url = `https://api.meetup.com/${urlname}/events?status=upcoming&sig_id=${sig_id}`;
+  const getGroup = fetch(`https://api.meetup.com/${urlname}?sig_id=${sig_id}`);
+  const getEvent = fetch(`https://api.meetup.com/${urlname}/events?status=upcoming&sig_id=${sig_id}`);
 
   async function getGDGInfo() {
-    const response = await fetch(url);
-    const json = await response.json();
-    return json;
+    const [group, event] = await Promise.all([
+      getGroup.then(response => response.json()),
+      getEvent.then(response => response.json())
+    ]);
+    return [group, event];
   }
 
   getGDGInfo()
