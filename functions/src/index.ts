@@ -9,18 +9,23 @@ export const get_gdg_group = functions.https.onRequest((req, res) => {
       .send({ errors: [{ message: "Please specify the GDG group name" }] });
   }
 
-  res.set('Cache-Control', 'public, max-age=86400, s-maxage=129600');
+  res.set("Cache-Control", "public, max-age=86400, s-maxage=129600");
 
   const sig_id = functions.config().meetup.key;
   const getGroup = fetch(`https://api.meetup.com/${urlname}?sig_id=${sig_id}`);
-  const getEvent = fetch(`https://api.meetup.com/${urlname}/events?status=upcoming&sig_id=${sig_id}`);
+  const getEvent = fetch(
+    `https://api.meetup.com/${urlname}/events?status=upcoming&sig_id=${sig_id}`
+  );
 
   async function getGDGInfo() {
     const [group, event] = await Promise.all([
       getGroup.then(response => response.json()),
       getEvent.then(response => response.json())
     ]);
-    return [group, event];
+    return {
+      name: group.name,
+      nextEvent: event[0]
+    };
   }
 
   getGDGInfo()
